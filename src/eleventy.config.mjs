@@ -15,7 +15,7 @@ export default function (eleventyConfig) {
 export const config = {
   templateFormats: ["njk"],
   dir: {
-    includes: "../_includes",
-    output: "../../public",
+    includes: "../../_includes",
+    output: "../../../public",
   },
 };
