@@ -1,0 +1,42 @@
+section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@property --offset {
+  syntax: "<number>";
+  initial-value: 1;
+  inherits: false;
+}
+
+article {
+  background: white;
+  padding: 3rem;
+  border-radius: 1em;
+  border: 3px solid;
+  box-shadow: 0.25rem 0.25rem 0 black;
+  rotate: calc(-3deg * var(--offset));
+  transition: 0.2s ease-in-out;
+
+  &:nth-child(even) {
+    box-shadow: 0.15rem 0.25rem 0 black;
+  }
+
+  &:nth-child(odd) {
+    --offset: -1;
+  }
+
+  &:hover {
+    box-shadow: 0 0.25rem 0 black;
+    --offset: 0;
+  }
+}
+
+img {
+  display: none;
+}
+
+body {
+  background: orangered;
+  padding: 3rem;
+}

@@ -1,0 +1,100 @@
+body {
+  background: orangered;
+  margin: 0;
+  /* display: grid; */
+  /* gap: 2rem; */
+  padding: 3rem;
+}
+
+@property --clip-path {
+  inherits: true;
+  initial-value: "";
+  syntax: "<custom-indent>";
+}
+
+body,
+html {
+  height: 100%;
+}
+
+:root {
+  --clip-path-all: rect(0 100% 100% 0%);
+}
+
+.box {
+  width: 500px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  position: relative;
+  border: 1px solid white;
+  outline: 1px solid white;
+  box-shadow: 0 0 3px white;
+
+  &::before, 
+  &::after {
+    content: "";
+    inset: 0;
+    position: absolute;
+    display: block;
+    background: purple;
+  }
+
+  &::before {
+    clip-path: var(--clip-path-1, var(--clip-path));
+  }
+
+  &::after {
+    background: green;
+    clip-path: inset(10%);
+    clip-path: inset(10% 10% 10% 10% round 20%, 20%);
+    /* clip-path: var(--clip-path-2, var(--clip-path-all)); */
+  }
+}
+
+.hexagon {
+  transition: 1000ms ease;
+
+  --clip-path-1: shape(
+    from 0 0,
+    line to 100% 0%,
+    line to 50% 50%,
+    arc to 0% 100%
+  );
+
+  /* --clip-path-2: shape(
+    from 50% 50%,
+    line to 100% 50%,
+    line to 100% 100%,
+    line to 0% 100%
+  ); */
+
+  /* --clip-path: shape(
+    from 0 0,
+    arc to 100% 100% of 10% ccw
+  ); */
+
+  
+}
+
+.canvas {
+  clip-path: shape(
+    from 0% 0%,
+    line to 10% 10%, 
+    line to 90% 10%, 
+    line to 100% 0%,
+    line to 90% 50%,
+    line to 10% 50%
+    /* line to 10% 60%, */
+    /* line to 10% 70%, */
+    /* line to 10% 100%, */
+    /* line to 0% 100%, */
+    /* arc to 70% 0% of 50% 50% cw, */
+  );
+
+  width: 100%;
+  height: 100%;
+  background: white;
+
+
+
+}

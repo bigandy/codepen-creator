@@ -1,0 +1,153 @@
+body {
+    background: orangered;
+    padding: 3rem;
+    anchor-name: --body;
+    margin: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.support {
+    background: red;
+    color: white;
+    position: absolute;
+    position-anchor: --body;
+    top: anchor(center);
+    translate: 0 -50%;
+    left: anchor(left);
+    height: calc(anchor-size() / 3);
+    width: calc(anchor-size());
+    display: grid;
+    place-content: center;
+    border: 10px double white;
+    font-size: 2rem;
+}
+
+body::before {
+    position-anchor: --body;
+    top: anchor(--body top);
+    left: anchor(--body left);
+    height: anchor-size(--body height);
+    width: anchor-size(--body);
+    content: "";
+    display: block;
+    position: absolute;
+    background: black;
+    opacity: 0.75;
+}
+
+:root {
+  --supports: if(
+      supports(background-color: if(style(--color: white): black; else: white))): true;
+    else: false;
+    );
+}
+
+@container style(--supports: true) {
+  .support {
+    display: none;
+  }
+
+  body::before {
+    display: none;
+  }
+}
+
+@supports (background-color: if(style(--color: white): black; else: white)) {
+    .support {
+        display: none;
+    }
+
+    body::before {
+        display: none;
+    }
+}
+
+.light-dark {
+    padding: 3rem;
+    color: var(--color);
+    background-color: if(style(--color: white): black; else: white); 
+}
+
+.dark {
+    --color: black;
+}
+.light {
+    --color: white;
+}
+
+.resizer {
+  resize: inline;
+  overflow: hidden;
+
+  height: 10rem;
+
+  container-type: inline-size;
+}
+
+.second {
+    height: 100%;
+    /* aspect-ratio: 1; */
+
+    /* background-color: if(
+      media(width > 300px): green; 
+      media(width > 600px): orange; 
+      else: blue;
+    ); */
+
+    --scheme: dark;
+
+    /* color: if(
+      style(--scheme: dark): var(--dark-color, black);
+      style(--scheme: dim): var(--dim-color, gray);
+      else: var(--light-color, white)
+    ); */
+
+    /* aspect-ratio: if(media(orientation: portrait): 3 / 1; else: 1 / 1;); */
+
+    border: 3px solid white;
+    display: grid;
+    place-content: center;
+
+    /* background-color: cyan; */
+
+    @container (width > 600px) {
+      --container: small;
+      /* background: green; */
+    }
+
+    @container (width > 800px) {
+      --container: medium;
+      /* background: orange; */
+    }
+
+    @container (width > 1000px) {
+      --container: large;
+      /* background: red; */
+    }
+
+    /* Could be written like so with if() */
+    background: if(
+      style(--container: large): green;
+      style(--container: medium): orange;
+      style(--container: small): red;
+      else: rebeccapurple;
+    );
+
+    /* Order is very important here. */
+    /* This will always evaluate to green if above 600px, and cyan if less */
+    /* background: if(
+      media(width > 600px): green;
+      media(width > 800px): orange;
+      media(width > 1000px): red;
+      else: cyan;
+    ); */
+
+}
