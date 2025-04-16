@@ -1,0 +1,67 @@
+.lines {
+  container-type: inline-size;
+
+  --first-number: 1.25;
+  --multiplier-unit: 1cqi;
+  --grad-odd-bg: black;
+  --grad-even-bg: transparent;
+  --row-gap: 1rem;
+}
+
+
+.lines-bg {
+  --stop-1: calc(pow(var(--first-number), 1) * var(--multiplier-unit));
+  --stop-2: calc(pow(var(--first-number), 2) * var(--multiplier-unit));
+  --stop-3: calc(pow(var(--first-number), 3) * var(--multiplier-unit));
+  --stop-4: calc(pow(var(--first-number), 4) * var(--multiplier-unit));
+  --stop-5: calc(pow(var(--first-number), 5) * var(--multiplier-unit));
+  --stop-6: calc(pow(var(--first-number), 6) * var(--multiplier-unit));
+
+  background: linear-gradient(
+      /* First line */
+      var(--grad-odd-bg) 0 var(--stop-1), 
+      var(--grad-even-bg) 0 calc(var(--stop-1) + var(--row-gap)), 
+
+      /* Second line */
+      var(--grad-odd-bg) 0 calc(var(--stop-1) + var(--stop-2) + (var(--row-gap) * 1)), 
+      var(--grad-even-bg) 0 calc(var(--stop-1) + var(--stop-2) + (var(--row-gap) * 2)), 
+      
+      /* Third line */
+      var(--grad-odd-bg) 0 calc(var(--stop-1) + var(--stop-2) + var(--stop-3) + (var(--row-gap) * 2)),
+      var(--grad-even-bg) 0 calc(var(--stop-1) + var(--stop-2) + var(--stop-3) + (var(--row-gap) * 3)),
+      
+      /* Fourth line */
+      var(--grad-odd-bg) 0 calc(var(--stop-1) + var(--stop-2) + var(--stop-3) + var(--stop-4) + (var(--row-gap) * 3)),
+      var(--grad-even-bg) 0 calc(var(--stop-1) + var(--stop-2) + var(--stop-3) + var(--stop-4) + (var(--row-gap) * 4)),
+
+      /* Fifth line */
+      var(--grad-odd-bg) 0 calc(var(--stop-1) + var(--stop-2) + var(--stop-3) + var(--stop-4) + var(--stop-5) + (var(--row-gap) * 4)),
+      var(--grad-even-bg) 0 calc(var(--stop-1) + var(--stop-2) + var(--stop-3) + var(--stop-4) + var(--stop-5) + (var(--row-gap) * 5)),
+      
+      /* Sixth line */
+      var(--grad-odd-bg) 0 calc(var(--stop-1) + var(--stop-2) + var(--stop-3) + var(--stop-4) + var(--stop-5) + var(--stop-6) + (var(--row-gap) * 5)),
+      var(--grad-even-bg) 0 calc(var(--stop-1) + var(--stop-2) + var(--stop-3) + var(--stop-4) + var(--stop-5) + var(--stop-6) + (var(--row-gap) * 6))
+  );
+
+  margin-top: 3rem;
+  height: 500px; 
+  /* aspect-ratio: 1; */
+}
+
+
+.line {
+  background: var(--grad-odd-bg);
+
+  &:not(:last-child) {
+    margin-bottom: var(--row-gap);
+  }
+
+  height: calc(pow(var(--first-number), var(--sibling-index)) * var(--multiplier-unit));
+}
+
+body {
+  /* background: orangered; */
+  /* https://www.conic.style/ */
+  background: conic-gradient(from -90deg at 25% 115%, #ff0000, #ff0066, #ff00cc, #cc00ff, #6600ff, #0000ff, #0000ff, #0000ff, #0000ff);
+  padding: 1rem;
+}
