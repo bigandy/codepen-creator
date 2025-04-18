@@ -1,0 +1,29 @@
+.box {
+  background: white;
+  aspect-ratio: 1;
+  height: 200px;
+  border-radius: 50%;
+  corner-shape: attr(corner-shape type(<custom-ident>));
+
+  transition: 300ms ease-in-out;
+
+  border: 30px solid;
+  
+  &:hover {
+    border-radius: 20%;
+  }
+}
+
+.superellipse {
+  --value: -0.25;
+  corner-shape: superellipse(var(--value));
+  
+  &:hover {
+    --value: 0.5;
+  }
+}
+
+body {
+  background: orangered;
+  padding: 3rem;
+}

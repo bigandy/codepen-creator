@@ -1,0 +1,14 @@
+<h2>Squircle - try in Chrome Canary with Experimental Features Flag enabled</h2>
+
+<p>See : <a href="https://drafts.csswg.org/css-borders-4/#corner-shaping">https://drafts.csswg.org/css-borders-4/#corner-shaping</a></p>
+
+{% set shapes = ['squircle', 'bevel', 'round', 'scoop', 'notch', 'straight'] %}
+{% for shape in shapes %}
+    <h3>corner-shape: {{ shape }}</h3>
+    <div class="box" corner-shape="{{ shape }}">
+    </div>
+{% endfor %}
+
+{% set extra_shape = 'superellipse' %}
+<h3>corner-shape: {{ extra_shape }}</h3>
+<div class="box {{ extra_shape }}"></div>
