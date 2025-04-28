@@ -1,0 +1,57 @@
+.loader {
+  aspect-ratio: 1;
+  height: 100px;
+  position: relative;
+
+  .child {
+    --animation-duration: 500ms;
+    --child-count: 5;
+    --width: calc(100% / var(--child-count));
+
+    height: 100%;
+    width: var(--width);
+    background: black;
+    top: 50%;
+    position: absolute;
+    /* height: 0; */
+    animation: var(--animation-duration) grow infinite alternate;
+    /* animation-timing-function: linear; */
+    transform: translateY(-50%)  scaleY(0);
+    animation-delay: calc(var(--index) * var(--animation-duration) / var(--child-count));
+    left: calc((var(--index) - 1) * var(--width));
+
+    /* transform: scaleY(0); */
+
+    &:nth-child(1) {
+      --index: 1;
+    }
+
+    &:nth-child(2) {
+      --index: 2;
+    }
+
+    &:nth-child(3) {
+      --index: 3;
+    }
+
+    &:nth-child(4) {
+      --index: 4;
+    }
+
+    &:nth-child(5) {
+      --index: 5;
+    }
+  }
+}
+
+@keyframes grow {
+  to {
+    transform: translateY(-50%) scaleY(1);
+  }
+}
+
+
+body {
+  background: orangered;
+  padding: 3rem;
+}
