@@ -1,0 +1,10 @@
+.box {
+  background: white;
+  aspect-ratio: 1;
+  height: 500px;
+}
+
+body {
+  background: orangered;
+  padding: 3rem;
+}
