@@ -1,0 +1,56 @@
+body {
+  background: orangered;
+  padding: 3rem;
+  margin: 0;
+}
+
+body, html, ul {
+  height: 100%;
+}
+
+@property --multiplier {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+ul {
+  /* border: 1px solid; */
+  margin: 0;
+  padding: 0;
+  list-style: "";
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  background: white;
+
+  li {
+
+    --_break-after-x-items: 9;
+    /* background: red; */
+    width: 100%;
+    height: calc(100 / sibling-count() * 1%);
+    /* background: hsl(calc((360 / sibling-count()) * sibling-index() * 1deg) 100% 50%); */
+
+    --multiplier: mod(sibling-index(), var(--_break-after-x-items));
+
+    /* Want to add a margin-bottom every x items, but without nth-child()	 */
+		/* use a clamp() : https://stackoverflow.com/a/64322555		 */
+
+		/* using - 2 because we're using index 0, and also want to add the margin under the item before we are breaking, so 2 before the break-after-x-items */
+		/* --number-to-compare: calc(var(--_break-after-x-items) - 2);
+		--large-number: var(--_break-after-x-items);
+
+		--add-margin: clamp(
+			0,
+			(var(--multiplier) - var(--number-to-compare)) * var(--large-number),
+			1
+		); */
+
+		/* margin-bottom: calc(var(--add-margin) * 20px);
+     */
+
+    background-color: if(style(--multiplier: 0): green; else: orange);
+    margin-bottom: if(style(--multiplier: 0): 20px;);
+  }
+}

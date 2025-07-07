@@ -45,9 +45,7 @@ html {
 
   &::after {
     background: green;
-    clip-path: inset(10%);
     clip-path: inset(10% 10% 10% 10% round 20%, 20%);
-    /* clip-path: var(--clip-path-2, var(--clip-path-all)); */
   }
 }
 

@@ -1,0 +1,65 @@
+/* Custom Ident. Chrome Canary with CL feature flag CSSIdentFunction */
+
+.blob {
+    /* --start-name: ident("--start" sibling-index()); */
+    z-index: 1;
+    position: relative;
+}
+
+/* This is where the circle is */
+.start {
+    anchor-name: var(--start-name);
+
+    height: 30px;
+    aspect-ratio: 1;
+    background: red;
+}
+
+.connector {
+    position: absolute;
+    inset: min(
+        anchor(var(--start-name) center),
+        anchor(--middle center)
+    );
+    background: black;
+}
+
+.wrapper {
+    background: white;
+    aspect-ratio: 1;
+    height: 500px;
+
+    position: relative;
+    container-type: inline-size;
+}
+
+.stack {
+    display: grid;
+    grid-template-areas: "stack";
+    place-content: center;
+
+    > * {
+        grid-area: stack;
+    }
+}
+
+.middle {
+    height: 50px;
+    background: orange;
+    opacity: 0.5;
+    aspect-ratio: 1;
+}
+
+body {
+    background: orangered;
+    padding: 3rem;
+
+    display: flex;
+    gap: 30rem;
+    flex-direction: column;
+    place-items: center;
+}
+
+.wrapper:nth-child(2) {
+    margin-left: 50%;
+}
