@@ -9,13 +9,13 @@ endif
 
 
 serve: checkForPen ## sets up vite local static server with livereload
-	cd $(SRC_BASE)/$(PEN) && npx @11ty/eleventy --watch --serve --config=../../eleventy.config.mjs --port=1980 
+	cd $(SRC_BASE)/$(PEN) && npx @11ty/eleventy --serve --config=../../eleventy.config.mjs --port=1980
 
 develop: checkForPen openUrl ## run development task for given PEN "make develop PEN=A"
-	 make serve 
+	 make serve
 
-openUrl: 
+openUrl:
 	open http://localhost:1980
 
 create: checkForPen ## creates new source for pens by passing PEN variable
-	cp -r boilerplate $(SRC_BASE)/$(PEN) 
+	cp -r boilerplate $(SRC_BASE)/$(PEN)

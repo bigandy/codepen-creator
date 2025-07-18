@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ title }}</title>
     <link rel="stylesheet" href="style.css">
+
+{% if favicon and favicon !== '' %}
+    <link rel="icon" href="https://fav.farm/{{ favicon }}" />
+{% else %}
+    {% set goodAssEmojis = ["💩", "🌶", "🔥", "🥰", "🖥", "👓"] %}
+    <link rel="icon" href="https://fav.farm/{{ goodAssEmojis | random }}" />
+{% endif %}
   </head>
   <body>
     {{ content | safe }}
