@@ -60,8 +60,8 @@ html {
 
 body {
     font-family: var(--ff-nixie);
-    min-height: 400%;
-    height: 100%;
+    /* min-height: 400%;
+    height: 100%; */
     margin: 0;
 }
 
@@ -155,12 +155,26 @@ header {
     /* margin-trim: inline-start; */
 }
 
+body {
+    padding-bottom: 3rem;
+}
+
 footer {
+    margin: 3rem;
     border: 30px solid transparent;
     padding: 3rem;
     border-radius: 1e3px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 
     background:
         linear-gradient(white 0 0) padding-box,
         var(--hdr-gradient) border-box;
+
+    nav {
+        display: flex;
+        /* background: red; */
+        justify-content: space-around;
+    }
 }
