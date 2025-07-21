@@ -1,7 +1,6 @@
 import { select, text, outro, note, isCancel } from "@clack/prompts";
 
-
-import {$, execa} from 'execa';
+import { $ } from "execa";
 
 import fs from "fs-extra";
 
@@ -12,13 +11,13 @@ async function main() {
   console.clear();
 
   // Which Path to take?
-  // 1. [ ] Create new Pen
-  // 2. [ ] Develop Existing Pen
+  // 1. [x] Create new Pen
+  // 2. [x] Develop Existing Pen
   // 3. [ ] [future] publish pen
 
   const selection = await select({
     message: "What do you want to do first?",
-    initialValue: "create",
+    initialValue: "develop",
     maxItems: 1,
     options: [
       {
@@ -32,17 +31,37 @@ async function main() {
     ],
   });
 
-  // console.log({ selection });
-
   if (selection === "develop") {
-    console.log("should develop, show autocomplete");
+    const files = await fs.readdir('./src/demos');
+
+    const demosSelection = await select({
+      message: "Select the demo you want to develop",
+      initialValue: "",
+      maxItems: 1,
+      options: files.map(demo => ({
+        value: demo,
+        label: demo
+      })),
+    });
+
+    console.log({demosSelection})
+
+    const newDirectory = `src/demos/${demosSelection}`;
+
+    try {
+      // AHTODO: can this be done in serial?
+      await Promise.all([
+        runDevServer(newDirectory),
+        openSiteInBrowser(),
+        openCodeInVSCode(newDirectory),
+        showSuccessMessage(),
+      ]);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   if (selection === "create") {
-  // if (true) {
-    console.log("should create a new pen");
-
-    // Example demonstrating the issue with initial value validation
     const name = await text({
       message: "Enter your pen name (letters and spaces only)",
       initialValue: "pen-name-1",
@@ -70,20 +89,19 @@ async function main() {
       note(`Valid name: ${name}`, "Success");
     }
 
-    // AHTODO: Create the folder by copying the files from the boilerplace to the location in question.
-
     const newDirectory = `src/demos/${name}`;
-    createProjectFolder(newDirectory);
+    await createProjectFolder(newDirectory);
 
     try {
+      // AHTODO: can this be done in serial?
       await Promise.all([
         runDevServer(newDirectory),
         openSiteInBrowser(),
-        openCodeInCode(newDirectory),
-        showSuccessMessage()
-      ])
+        openCodeInVSCode(newDirectory),
+        showSuccessMessage(),
+      ]);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
@@ -91,24 +109,31 @@ async function main() {
 }
 
 const showSuccessMessage = () => {
-  note('opening vs code to edit you the code');
-  note('opening default browser on http://localhost:1980');
-  note('running dev server on http://localhost:1980');
-}
+  note(
+    `opening vs code to edit you the code
+    opening default browser on http://localhost:1980
+    running dev server on http://localhost:1980
+    `,
+    "Success",
+    {}
+  );
+};
 
-const openCodeInCode = async (newDirectory) => {
-  return await execa`code ${newDirectory}:8:7 -g`;
-}
+const openCodeInVSCode = async (newDirectory) => {
+  return await $`code ${newDirectory}/index.njk:2:5 -g`;
+};
 
 const openSiteInBrowser = async () => {
-  return await execa`open http://localhost:1980`;
-}
+  return await $`open http://localhost:1980`;
+};
 
 const runDevServer = async (cwd) => {
   // cwd: set the current working directory and then run the dev server
-  
-  return await execa({ cwd })`npx @11ty/eleventy --serve --config=../../eleventy.config.mjs --port=1980`
-}
+
+  return await $({
+    cwd,
+  })`npx @11ty/eleventy --serve --config=../../eleventy.config.mjs --port=1980`;
+};
 
 const createProjectFolder = async (newDirectory) => {
   if (!fs.existsSync(newDirectory)) {
