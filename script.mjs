@@ -1,89 +1,133 @@
-import * as p from "@clack/prompts";
+import { select, text, outro, note, isCancel } from "@clack/prompts";
 
-import { setTimeout } from "node:timers/promises";
+
+import {$, execa} from 'execa';
+
+import fs from "fs-extra";
+
+// import { setTimeout } from "node:timers/promises";
 // import color from "picocolors";
 
 async function main() {
-    console.clear();
+  console.clear();
 
-    // const spin = p.spinner();
+  // Which Path to take?
+  // 1. [ ] Create new Pen
+  // 2. [ ] Develop Existing Pen
+  // 3. [ ] [future] publish pen
 
-    // p.intro("spinner start...");
+  const selection = await select({
+    message: "What do you want to do first?",
+    initialValue: "create",
+    maxItems: 1,
+    options: [
+      {
+        value: "create",
+        label: "Create",
+      },
+      {
+        value: "develop",
+        label: "Develop",
+      },
+    ],
+  });
 
-    // spin.start();
+  // console.log({ selection });
 
-    // await setTimeout(1000);
+  if (selection === "develop") {
+    console.log("should develop, show autocomplete");
+  }
 
-    // p.confirm({
-    //     message: "Install dependencies?",
-    //     initialValue: false,
-    // });
-    const select = await p.multiselect({
-        message: "Select additional tools.",
-        initialValues: ["prettier", "eslint"],
-        options: [
-            {
-                value: "prettier",
-                label: "Prettier",
-                hint: "recommended",
-            },
-            {
-                value: "eslint",
-                label: "ESLint",
-                hint: "recommended",
-            },
-        ],
+  if (selection === "create") {
+  // if (true) {
+    console.log("should create a new pen");
+
+    // Example demonstrating the issue with initial value validation
+    const name = await text({
+      message: "Enter your pen name (letters and spaces only)",
+      initialValue: "pen-name-1",
+      validate: (value) => {
+        if (!value) {
+          return "Please enter a PEN name.";
+        }
+
+        if (!/^[a-zA-Z0-9-]+$/.test(value)) {
+          return "Name can only contain letters, numbers, and hyphens ";
+        }
+
+        const newDirectory = `src/demos/${value}`;
+
+        if (fs.existsSync(newDirectory)) {
+          return "folder exists already, edit your name and try again";
+        }
+
+        // TODO: validate that there is a minimum of 3 letters, a hyphen and a number e.g. pen-1
+        return undefined;
+      },
     });
 
-    console.log({ select });
-
-    p.text({
-        message: "Where should we create your project?",
-        placeholder: "./sparkling-solid",
-        validate: (value) => {
-            if (!value) return "Please enter a path.";
-            if (value[0] !== ".")
-                return "Please enter a relative path.";
-        },
-    });
-
-    const countries = [
-        { value: "us", label: "United States", hint: "NA" },
-        { value: "ca", label: "Canada", hint: "NA" },
-        { value: "mx", label: "Mexico", hint: "NA" },
-        { value: "br", label: "Brazil", hint: "SA" },
-        { value: "ar", label: "Argentina", hint: "SA" },
-        { value: "uk", label: "United Kingdom", hint: "EU" },
-        { value: "fr", label: "France", hint: "EU" },
-        { value: "de", label: "Germany", hint: "EU" },
-        { value: "it", label: "Italy", hint: "EU" },
-        { value: "es", label: "Spain", hint: "EU" },
-        { value: "pt", label: "Portugal", hint: "EU" },
-        { value: "ru", label: "Russia", hint: "EU/AS" },
-        { value: "cn", label: "China", hint: "AS" },
-        { value: "jp", label: "Japan", hint: "AS" },
-        { value: "in", label: "India", hint: "AS" },
-        { value: "kr", label: "South Korea", hint: "AS" },
-        { value: "au", label: "Australia", hint: "OC" },
-        { value: "nz", label: "New Zealand", hint: "OC" },
-        { value: "za", label: "South Africa", hint: "AF" },
-        { value: "eg", label: "Egypt", hint: "AF" },
-    ];
-
-    const result = await p.autocompleteMultiselect({
-        message: "Select a country",
-        options: countries,
-        placeholder: "Type to search countries...",
-        maxItems: 8,
-    });
-
-    if (p.isCancel(result)) {
-        p.cancel("Operation cancelled.");
-        process.exit(0);
+    if (!isCancel(name)) {
+      note(`Valid name: ${name}`, "Success");
     }
 
-    p.outro("all done");
+    // AHTODO: Create the folder by copying the files from the boilerplace to the location in question.
+
+    const newDirectory = `src/demos/${name}`;
+    createProjectFolder(newDirectory);
+
+    try {
+      await Promise.all([
+        runDevServer(newDirectory),
+        openSiteInBrowser(),
+        openCodeInCode(newDirectory),
+        showSuccessMessage()
+      ])
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  outro("all done");
 }
+
+const showSuccessMessage = () => {
+  note('opening vs code to edit you the code');
+  note('opening default browser on http://localhost:1980');
+  note('running dev server on http://localhost:1980');
+}
+
+const openCodeInCode = async (newDirectory) => {
+  return await execa`code ${newDirectory}:8:7 -g`;
+}
+
+const openSiteInBrowser = async () => {
+  return await execa`open http://localhost:1980`;
+}
+
+const runDevServer = async (cwd) => {
+  // cwd: set the current working directory and then run the dev server
+  
+  return await execa({ cwd })`npx @11ty/eleventy --serve --config=../../eleventy.config.mjs --port=1980`
+}
+
+const createProjectFolder = async (newDirectory) => {
+  if (!fs.existsSync(newDirectory)) {
+    fs.mkdirSync(newDirectory);
+  } else {
+    throw new Error("folder exists already. Show error");
+  }
+
+  try {
+    await fs.copy("./boilerplate", newDirectory);
+
+    note("success! New Pen files created");
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+main().catch(console.error);
+
 // $.verbose = true;
 
 // const demoTitle = (await question("Demo Title? ")).trim();
@@ -102,4 +146,60 @@ async function main() {
 // await $`code ${newFileLocation}:8:7 -g`;
 // await $`npm run dev -- --port 1234`;
 
-main().catch(console.error);
+// text({
+//     message: "Where should we create your project?",
+//     placeholder: "./sparkling-solid",
+//     validate: (value) => {
+//         if (!value) return "Please enter a path.";
+//         if (value[0] !== ".")
+//             return "Please enter a relative path.";
+//     },
+// });
+
+// const countries = [
+//     { value: "us", label: "United States", hint: "NA" },
+//     { value: "ca", label: "Canada", hint: "NA" },
+//     { value: "mx", label: "Mexico", hint: "NA" },
+//     { value: "br", label: "Brazil", hint: "SA" },
+//     { value: "ar", label: "Argentina", hint: "SA" },
+//     { value: "uk", label: "United Kingdom", hint: "EU" },
+//     { value: "fr", label: "France", hint: "EU" },
+//     { value: "de", label: "Germany", hint: "EU" },
+//     { value: "it", label: "Italy", hint: "EU" },
+//     { value: "es", label: "Spain", hint: "EU" },
+//     { value: "pt", label: "Portugal", hint: "EU" },
+//     { value: "ru", label: "Russia", hint: "EU/AS" },
+//     { value: "cn", label: "China", hint: "AS" },
+//     { value: "jp", label: "Japan", hint: "AS" },
+//     { value: "in", label: "India", hint: "AS" },
+//     { value: "kr", label: "South Korea", hint: "AS" },
+//     { value: "au", label: "Australia", hint: "OC" },
+//     { value: "nz", label: "New Zealand", hint: "OC" },
+//     { value: "za", label: "South Africa", hint: "AF" },
+//     { value: "eg", label: "Egypt", hint: "AF" },
+// ];
+
+// const result = await p.autocompleteMultiselect({
+//     message: "Select a country",
+//     options: countries,
+//     placeholder: "Type to search countries...",
+//     maxItems: 8,
+// });
+
+// if (p.isCancel(result)) {
+//     p.cancel("Operation cancelled.");
+//     process.exit(0);
+// }
+
+// const spin = p.spinner();
+
+// p.intro("spinner start...");
+
+// spin.start();
+
+// await setTimeout(1000);
+
+// p.confirm({
+//     message: "Install dependencies?",
+//     initialValue: false,
+// });

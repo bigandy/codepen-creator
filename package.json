@@ -7,9 +7,9 @@
         "dev": "echo 'Warning! Not using NPM. See make file!'"
     },
     "devDependencies": {
-        "@11ty/eleventy": "3.1.1"
-    },
-    "dependencies": {
+        "@11ty/eleventy": "3.1.1",
+        "execa": "9.6.0",
+        "fs-extra": "11.3.0",
         "@clack/prompts": "1.0.0-alpha.1"
     }
 }
