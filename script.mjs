@@ -28,12 +28,17 @@ async function main() {
         value: "develop",
         label: "Develop",
       },
+      {
+        value: "build",
+        label: "Build",
+      },
     ],
   });
 
   if (selection === "develop") {
     const files = await fs.readdir('./src/demos');
 
+    // AHTODO: change this to an autocomplete
     const demosSelection = await select({
       message: "Select the demo you want to develop",
       initialValue: "",
@@ -43,8 +48,6 @@ async function main() {
         label: demo
       })),
     });
-
-    console.log({demosSelection})
 
     const newDirectory = `src/demos/${demosSelection}`;
 
@@ -56,6 +59,33 @@ async function main() {
         openCodeInVSCode(newDirectory),
         showSuccessMessage(),
       ]);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if (selection === "build") {
+    const files = await fs.readdir('./src/demos');
+
+    // AHTODO: change this to an autocomplete??
+    const demosSelection = await select({
+      message: "Select the demo you want to build",
+      initialValue: "",
+      maxItems: 1,
+      options: files.map(demo => ({
+        value: demo,
+        label: demo
+      })),
+    });
+
+
+    const selectedDirectory = `src/demos/${demosSelection}`;
+
+    try {
+      // AHTODO: can this be done in serial?
+      await runBuild(selectedDirectory);
+      await openSiteInBrowser();
+      await runPreview(selectedDirectory);
     } catch (error) {
       console.error(error);
     }
@@ -133,6 +163,22 @@ const runDevServer = async (cwd) => {
   return await $({
     cwd,
   })`npx @11ty/eleventy --serve --config=../../eleventy.config.mjs --port=1980`;
+};
+
+const runBuild = async (cwd) => {
+  // cwd: set the current working directory and then run the dev server
+
+  return await $({
+    cwd,
+  })`npx @11ty/eleventy --config=../../eleventy.config.mjs`;
+};
+
+const runPreview = async () => {
+  // cwd: set the current working directory and then run the dev server
+
+  return await $({
+    cwd: "_site",
+  })`python3 -m http.server 1980`;
 };
 
 const createProjectFolder = async (newDirectory) => {
