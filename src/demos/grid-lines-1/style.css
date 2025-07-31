@@ -1,0 +1,58 @@
+.grid {
+  background: white;
+  min-height: 500px;
+  border: 1px solid;
+
+  display: grid;
+
+  --number-of-columns: attr(data-grid-items type(<number>));
+  --gap: 2em;
+  --column-color: rgb(from hotpink r g b / 0.5);
+  --gap-color: rgb(from orange r g b / 0.5);
+
+  grid-template-columns: repeat(var(--number-of-columns), var(--gap) 1fr) var(
+      --gap
+    );
+  border-inline: 0;
+}
+
+.column {
+  background: var(--column-color);
+  grid-column-start: calc((2 * (sibling-index() - 1)) + 2);
+  position: relative;
+
+  &::after {
+    height: 100%;
+
+    width: var(--gap);
+    position: absolute;
+    translate: calc(-100% + 1px) 0;
+  }
+}
+
+.column::after,
+.grid::after {
+  content: "";
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  background: var(--gap-color);
+}
+
+body {
+  padding: 3rem;
+  display: grid;
+  gap: 3rem;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}

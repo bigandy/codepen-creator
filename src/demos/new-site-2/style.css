@@ -1,0 +1,49 @@
+.grid {
+  background: white;
+  min-height: 500px;
+
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(16, 1fr);
+  gap: 1rem;
+  column-rule: 3px dotted black;
+  row-rule: 1px dotted blue;
+  /* column-rule-color: red green; */
+  /* row-rule: 1px solid blue; */
+
+  /* column-rule-break: spanning-item; */
+  /* row-rule-break: intersection; */
+  /* column-rule-outset: -10px; */
+  /* row-rule-outset: -10px; */
+
+}
+
+[data-attr-start] {
+  grid-column-start: attr(data-attr-start type(<number>));
+}
+
+[data-attr-end] {
+  grid-column-end: attr(data-attr-end type(<number>));
+}
+
+header {
+  /* background: rgb(from orange r g b / 0.25); */
+}
+
+body {
+  background: orangered;
+  padding: 3rem;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
