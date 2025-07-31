@@ -1,4 +1,4 @@
-import { select, text, outro, note, isCancel } from "@clack/prompts";
+import { select, text, outro, note, isCancel, autocomplete } from "@clack/prompts";
 
 import { $ } from "execa";
 
@@ -38,8 +38,7 @@ async function main() {
   if (selection === "develop") {
     const files = await fs.readdir('./src/demos');
 
-    // AHTODO: change this to an autocomplete
-    const demosSelection = await select({
+    const projectFolder = await autocomplete({
       message: "Select the demo you want to develop",
       initialValue: "",
       maxItems: 1,
@@ -49,7 +48,8 @@ async function main() {
       })),
     });
 
-    const newDirectory = `src/demos/${demosSelection}`;
+
+    const newDirectory = `src/demos/${projectFolder}`;
 
     try {
       // AHTODO: can this be done in serial?
@@ -67,8 +67,7 @@ async function main() {
   if (selection === "build") {
     const files = await fs.readdir('./src/demos');
 
-    // AHTODO: change this to an autocomplete??
-    const demosSelection = await select({
+    const demosSelection = await autocomplete({
       message: "Select the demo you want to build",
       initialValue: "",
       maxItems: 1,
@@ -150,11 +149,13 @@ const showSuccessMessage = () => {
 };
 
 const openCodeInVSCode = async (newDirectory) => {
-  return await $`code ${newDirectory}/index.njk:2:5 -g`;
+  await $`code ${newDirectory}`;
+  await $`code ${newDirectory}/index.njk:2:5 -g`;
+  return;
 };
 
 const openSiteInBrowser = async () => {
-  return await $`open http://localhost:1980`;
+  return await $({ shell: true })`open -a "Google Chrome Canary" "http://localhost:1980"`;
 };
 
 const runDevServer = async (cwd) => {
