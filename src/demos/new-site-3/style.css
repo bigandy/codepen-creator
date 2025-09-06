@@ -1,0 +1,66 @@
+@layer setup, regular, theme;
+
+@import url("https://unpkg.com/open-props") layer(setup);
+@import url("https://unpkg.com/open-props/normalize.min.css") layer(setup);
+
+@layer regular {
+  section {
+    margin-block: 3rem;
+    width: min(100%, 900px);
+    margin-inline: auto;
+    display: grid;
+    gap: 2rem;
+
+    /* using the "rule" shorthand rather than row-rule so it works if I want to change the flex-direction to row */
+    rule: 2px solid black;
+    rule-width: 2px 1px;
+
+    @media (min-width: 1200px) {
+      width: auto;
+
+      grid-template-columns: repeat(auto-fill, minmax(222px, 1fr));
+      column-rule-break: intersection;
+      column-rule-outset: 0px;
+      row-rule-width: 0;
+      rule-break: none;
+
+      article {
+        grid-template-rows: subgrid;
+        display: grid;
+        grid-row: auto / span 2;
+        gap: 2rem;
+        rule: 1px solid black;
+      }
+    }
+  }
+}
+
+@layer setup {
+  footer,
+  header {
+    display: none;
+  }
+
+  html {
+    --background: oklab(from orangered l a b / 0.5);
+    scrollbar-color: black var(--background);
+  }
+
+  body {
+    background: var(--background);
+    padding: 3rem;
+  }
+
+  html {
+    height: 100%;
+  }
+
+  body {
+    min-height: 100%;
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}

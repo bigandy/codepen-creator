@@ -1,0 +1,20 @@
+<button commandfor="confirm-dialog" command="toggle-popover">
+  Delete Record
+</button>
+<div popover id="confirm-dialog">
+  <header>
+    <h1>Delete Record?</h1>
+    <button commandfor="confirm-dialog" command="close" aria-label="Close" value="close">
+      <img role="none" src="/close-icon.svg">
+    </button>
+  </header>
+  <p>Are you sure? This action cannot be undone</p>
+  <footer>
+    <button commandfor="confirm-dialog" command="hide-popover" value="cancel">
+      Cancel
+    </button>
+    <button commandfor="confirm-dialog" command="hide-popover" value="delete">
+      Delete
+    </button>
+  </footer>
+</div>

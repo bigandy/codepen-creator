@@ -2,10 +2,4 @@
 
 ## Commands
 
-### Creation
-
-make create PEN=css-random-1 TITLE="Cool demo of of the new random() css feature"
-
-### Development
-
-make develop PEN=css-random-1
+npm run dev

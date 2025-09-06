@@ -1,0 +1,385 @@
+@layer setup, theme;
+
+@property --rotate {
+	syntax: "<angle>";
+	inherits: true;
+	initial-value: 0deg;
+}
+
+@property --index {
+	syntax: "<number>";
+	inherits: true;
+	initial-value: 0;
+}
+
+@layer setup {
+	:root {
+		--theme: two;
+	}
+
+	html:has(.theme > option[value="one"]:checked) {
+		--theme: one;
+	}
+
+	html:has(.theme > option[value="two"]:checked) {
+		--theme: two;
+	}
+
+	html:has(.theme > option[value="three"]:checked) {
+		--theme: three;
+	}
+
+	@layer hidestuff {
+
+		.intro,
+		.ring-wrapper,
+		body>nav,
+		body>header,
+		main>h2,
+		main>a {
+			display: none;
+		}
+	}
+
+	@layer selects {
+
+		select,
+		::picker(select) {
+			appearance: base-select;
+		}
+
+		select {
+			border: 2px solid #dddddd;
+			background: #eeeeee;
+			padding: 10px;
+			transition: 0.4s;
+			width: 100%;
+		}
+
+		select:hover,
+		select:focus {
+			background: #dddddd;
+		}
+
+		select::picker-icon {
+			color: #999999;
+			transition: 0.4s rotate;
+		}
+
+		::picker(select) {
+			border: none;
+			border-radius: 1rem;
+		}
+
+		option {
+			display: flex;
+			justify-content: flex-start;
+			gap: 20px;
+
+			border-bottom: 2px solid #dddddd;
+			background: #eeeeee;
+			padding: 10px;
+		}
+
+		option:last-of-type {
+			border-bottom: none;
+		}
+
+		option:nth-of-type(odd) {
+			background: white;
+		}
+
+		option:hover,
+		option:focus {
+			background: plum;
+		}
+	}
+
+	html,
+	body {
+		height: 100%;
+	}
+
+	body {
+		padding: 3rem;
+	}
+
+	article {
+		border: 1px solid;
+	}
+
+	a {
+		color: inherit;
+	}
+
+	:where(h1, h2, h3) {
+		margin: 0;
+	}
+
+	ol {
+		background-color: gray;
+		right: 10px;
+		top: 10px;
+		position: fixed;
+		scroll-target-group: auto;
+	}
+
+	/* :target-before and :target-after are currently in Chrome Canary. */
+	/* a:target-before {
+		background: orange;
+	}
+
+	a:target-after {
+		background: blue;
+	} */
+	/* end */
+
+	li {
+		--index: sibling-index();
+		counter-reset: index var(--index);
+
+		/* & a:target-current::before {
+			counter-reset: index var(--index);
+			content: counter(index);
+		} */
+	}
+
+	a:target-current {
+		background: white;
+		color: black;
+
+		&::after {
+			/* content: sibling-index(); */
+			margin-left: 0.5rem;
+			content: counter(index);
+		}
+	}
+
+	:target {
+		background: yellow !important;
+
+
+	}
+}
+
+@layer theme {
+	@layer one {
+		@container style(--theme: one) {
+			body {
+				--body-bg: red;
+				--accent: purple;
+			}
+
+			/* Following New Carousel using this tool: https://chrome.dev/carousel-configurator/ */
+
+			.blog-posts {
+				margin-inline: auto;
+				border: 2px solid white;
+				overflow-x: auto;
+				scroll-behavior: smooth;
+				overscroll-behavior-x: contain;
+				scrollbar-width: none;
+				scroll-snap-type: x mandatory;
+				padding: 1rem;
+				scroll-padding: 1rem;
+				container-type: inline-size scroll-state;
+				inline-size: 1024px;
+				max-inline-size: 100vw;
+				anchor-name: --carousel;
+
+				grid-auto-flow: column;
+				grid-auto-columns: 33%;
+				display: grid;
+				gap: 1rem;
+
+				>article {
+					scroll-snap-align: center;
+					padding: 1rem;
+					background: white;
+					scroll-snap-stop: always;
+				}
+			}
+
+			.blog-posts {
+				/* Scroll Marker Dots */
+				scroll-marker-group: after;
+
+				/* container-type: scroll-state; */
+
+
+				&::scroll-marker-group {
+					position: fixed;
+					position-anchor: --carousel;
+					position-area: block-end;
+					margin: 10px;
+
+					display: grid;
+					grid-auto-columns: 20px;
+					grid-auto-flow: column;
+					gap: 20px;
+				}
+
+				>article {
+					&::scroll-marker {
+						content: "" / attr(data-label);
+						cursor: pointer;
+						aspect-ratio: 1;
+						border-radius: var(--radius-round, 50%);
+						border: 1px solid var(--surface-4, white);
+						background: white;
+					}
+
+					&::scroll-marker:target-current {
+						background: var(--accent);
+					}
+				}
+			}
+
+			.blog-posts {
+
+				/* Navigation Buttons (Left/Right) */
+				&::scroll-button(*) {
+					position: fixed;
+					position-anchor: --carousel;
+					font-family: "Material Symbols Outlined";
+				}
+
+				&::scroll-button(inline-end) {
+					position-area: inline-end center;
+					content: "Next";
+				}
+
+				&::scroll-button(inline-start) {
+					position-area: inline-start center;
+					content: "Previous";
+				}
+			}
+
+			.blog-posts {
+				>article {
+					scroll-snap-align: center;
+					container-type: scroll-state;
+
+					@container scroll-state(snapped) {
+						header {
+							background: orange;
+						}
+
+					}
+
+
+
+
+				}
+
+
+			}
+		}
+	}
+
+	@layer two {
+		@container style(--theme: two) {
+			body {
+				--body-bg: green;
+			}
+
+			.blog-posts {
+				display: grid;
+				gap: 1rem;
+				grid-template-columns: repeat(auto-fit, minmax(222px, 1fr));
+				padding: 1rem;
+				background: white;
+			}
+
+			article {
+				--index: sibling-index();
+				background-color: var(--body-bg);
+				padding: 1rem;
+
+				header {
+					padding: 1rem;
+				}
+
+				--mod-3: mod(var(--index), 3);
+
+				@container style(--mod-3 >0) {
+					header {
+						background: blueviolet;
+					}
+				}
+
+				@container style(--mod-3=0) {
+					header {
+						background: deeppink;
+					}
+				}
+			}
+		}
+	}
+
+	@layer three {
+		@container style(--theme: three) {
+			body {
+				--body-bg: blue;
+				display: grid;
+				place-content: center;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			html {
+				height: stretch;
+			}
+
+			body {
+				position: relative;
+				margin: 0;
+			}
+
+			select {
+				position: absolute;
+				top: 1rem;
+				left: 1rem;
+				width: calc(100% - 2rem);
+			}
+
+			.blog-posts {
+				display: grid;
+				place-content: center;
+				perspective: 1000px;
+				/* perspective-origin: 300% 200%; */
+				transform-style: preserve-3d;
+
+				>article {
+					transition: --rotate 300ms;
+					--rotate: calc((sibling-index() + 1) * calc(360deg / sibling-count()) + var(--extra, 0deg));
+					padding: 1rem;
+					border-radius: 0.25rem;
+					corner-shape: squircle;
+					transform: rotateX(var(--rotate, 0)) translateY(var(--translate-x, 50px));
+					transform-origin: top left;
+					grid-area: 1 / 1;
+					/* width: 100%; */
+					background: white;
+					/* backface-visibility: hidden; */
+				}
+
+				&:hover {
+					--extra: 180deg;
+				}
+			}
+
+			/* How to do a 3d spiradeck of posts? */
+		}
+	}
+
+	body {
+		background: var(--body-bg, revert-layer);
+	}
+
+	a {
+		color: var(--accent, revert-layer);
+	}
+}
